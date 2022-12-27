@@ -1,5 +1,72 @@
-const { app, BrowserWindow, dialog, globalShortcut } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  dialog,
+  globalShortcut,
+  Menu,
+  MenuItem,
+} = require('electron');
 const path = require('path');
+
+// const mainMenu = new Menu();
+// const mainMenuItem = new MenuItem({
+//   label: 'Electron',
+//   submenu: [
+//     {
+//       label: 'item1',
+//     },
+//     {
+//       label: 'item2',
+//     },
+//     {
+//       label: 'item3',
+//     },
+//   ],
+// });
+// mainMenu.append(mainMenuItem);
+
+const mainMenuItem = Menu.buildFromTemplate([
+  {
+    label: 'Electron',
+    submenu: [
+      {
+        label: 'item1',
+        enabled: false,
+      },
+      {
+        label: 'item2',
+        click: () => {
+          console.log('item2 clicked');
+        },
+      },
+      {
+        label: 'item3',
+        accelerator: 'shift +  F',
+        click: () => {
+          console.log('item3 clicked');
+        },
+      },
+      {
+        label: 'item4',
+        role: 'togglefullscreen',
+      },
+    ],
+  },
+  {
+    label: 'Info',
+    submenu: [
+      {
+        label: 'item1',
+      },
+      {
+        label: 'item2',
+      },
+      {
+        label: 'item3',
+      },
+    ],
+  },
+]);
 
 createWindow = () => {
   var mainWindow = new BrowserWindow({
@@ -7,7 +74,7 @@ createWindow = () => {
     height: 300,
     title: 'google',
     backgroundColor: 'black',
-    frame: false,
+    // frame: false,
     // transparent: true,
     reSizeable: false,
     // opacity: 0.2,
@@ -38,6 +105,8 @@ createWindow = () => {
     //   })
     //   .then((res) => console.log(res));
   });
+
+  mainWindow.setMenu(mainMenuItem);
 
   globalShortcut.register('commandOrControl +  F', () => {
     console.log('useer press F');
