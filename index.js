@@ -5,8 +5,14 @@ const {
   globalShortcut,
   Menu,
   MenuItem,
+  Tray,
+  powerMonitor,
 } = require('electron');
 const path = require('path');
+
+///////////////////////////////////////////////////.*.Menu.*.//////////////////////////////////////
+
+let appTray, mainWindow;
 
 // const mainMenu = new Menu();
 // const mainMenuItem = new MenuItem({
@@ -25,7 +31,7 @@ const path = require('path');
 // });
 // mainMenu.append(mainMenuItem);
 
-const mainMenuItem = Menu.buildFromTemplate([
+const mainMenu = Menu.buildFromTemplate([
   {
     label: 'Electron',
     submenu: [
@@ -68,8 +74,40 @@ const mainMenuItem = Menu.buildFromTemplate([
   },
 ]);
 
+const trayMenu = Menu.buildFromTemplate([
+  {
+    label: 'item1',
+  },
+  {
+    label: 'item2',
+  },
+  {
+    label: 'item3',
+  },
+]);
+
+///////////////////////////////////////////////////.*.Menu.*.//////////////////////////////////////////////
+///////////////////////////////////////////////////.*.Tray.*.//////////////////////////////////////////////
+
+const CreateAppTray = () => {
+  const imagePath = path.join('assets', 'images.png');
+  appTray = new Tray(imagePath);
+  appTray.setToolTip('my Application');
+  appTray.setContextMenu(trayMenu);
+  appTray.on('click', (e) => {
+    if (e.shiftKey) {
+      app.quit();
+    } else {
+      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+    }
+  });
+};
+
+///////////////////////////////////////////////////.*.Tray.*.//////////////////////////////////////////////
+///////////////////////////////////////////////////.*.createWindow.*.//////////////////////////////////////
+
 createWindow = () => {
-  var mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 500,
     height: 300,
     title: 'google',
@@ -81,6 +119,10 @@ createWindow = () => {
     // alwaysOnTop: true,
     show: false,
   });
+
+  ///////////////////////////////////////////////////.*.createWindow.*.//////////////////////////////////////
+
+  CreateAppTray();
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
   //   mainWindow.loadURL('https://google.com');
@@ -106,8 +148,24 @@ createWindow = () => {
     //   .then((res) => console.log(res));
   });
 
-  mainWindow.setMenu(mainMenuItem);
+  mainWindow.setMenu(mainMenu);
 
+  ///////////////////////////////////////////////////.*.powerMonitor.*.//////////////////////////////////////
+  //if pc go to sleep
+  powerMonitor.on('suspend', (e) => {
+    console.log('This is Suspend event');
+  });
+
+  //if pc go to run again
+  powerMonitor.on('resume', (e) => {
+    if (mainWindow === null) {
+      createWindow();
+      console.log('This is resume event');
+    }
+  });
+
+  ///////////////////////////////////////////////////.*.powerMonitor.*.//////////////////////////////////////
+  ///////////////////////////////////////////////////.*.shortCut.*./////////////////////////////////////////
   globalShortcut.register('commandOrControl +  F', () => {
     console.log('useer press F');
     // globalShortcut.unregister('commandOrControl +  F');
@@ -115,6 +173,7 @@ createWindow = () => {
   });
 
   // mainWindow.webContents.openDevTools();
+  ///////////////////////////////////////////////////.*.shortCut.*.//////////////////////////////////////
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
