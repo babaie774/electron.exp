@@ -7,6 +7,7 @@ const {
   MenuItem,
   Tray,
   powerMonitor,
+  session,
 } = require('electron');
 const path = require('path');
 
@@ -172,8 +173,28 @@ createWindow = () => {
     console.log(globalShortcut.isRegistered('commandOrControl +  F'));
   });
 
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   ///////////////////////////////////////////////////.*.shortCut.*.//////////////////////////////////////
+  ///////////////////////////////////////////////////.*.cookie.*.//////////////////////////////////////
+  session.defaultSession.cookies
+    .set({
+      url: 'https://google.com/',
+      name: 'fllName',
+      value: 'Ali Rezai',
+    })
+    .then((res) => {
+      session.defaultSession.cookies.get({url: 'yahoo.com'}).then((data) => {
+        console.log(data);
+      });
+    })
+    .catch((err) => console.log(err));
+
+  // session.defaultSession.cookies
+  //   .get({ url: 'https://google.com/' })
+  //   .then((data) => {
+  //     console.log(data);
+  //   });
+  ///////////////////////////////////////////////////.*.cookie.*.//////////////////////////////////////
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
