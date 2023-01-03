@@ -149,8 +149,6 @@ createWindow = () => {
     //   .then((res) => console.log(res));
   });
 
-  mainWindow.setMenu(mainMenu);
-
   ///////////////////////////////////////////////////.*.powerMonitor.*.//////////////////////////////////////
   //if pc go to sleep
   powerMonitor.on('suspend', (e) => {
@@ -173,7 +171,6 @@ createWindow = () => {
     console.log(globalShortcut.isRegistered('commandOrControl +  F'));
   });
 
-  mainWindow.webContents.openDevTools();
   ///////////////////////////////////////////////////.*.shortCut.*.//////////////////////////////////////
   ///////////////////////////////////////////////////.*.cookie.*.//////////////////////////////////////
   session.defaultSession.cookies
@@ -183,7 +180,7 @@ createWindow = () => {
       value: 'Ali Rezai',
     })
     .then((res) => {
-      session.defaultSession.cookies.get({url: 'yahoo.com'}).then((data) => {
+      session.defaultSession.cookies.get({ url: 'yahoo.com' }).then((data) => {
         console.log(data);
       });
     })
@@ -195,7 +192,8 @@ createWindow = () => {
   //     console.log(data);
   //   });
   ///////////////////////////////////////////////////.*.cookie.*.//////////////////////////////////////
-
+  mainWindow.setMenu(mainMenu);
+  mainWindow.webContents.openDevTools();
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
   });

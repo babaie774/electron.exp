@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/babaie774/electron.exp#readme",
   "dependencies": {
+    "bootstrap": "^5.2.3",
     "electron": "^22.0.0"
   }
 }
